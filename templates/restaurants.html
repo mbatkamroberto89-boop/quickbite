@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quickbite</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg" id="hero-bg"></div>
+        <div class="hero-content">
+            <h1>Quickbite</h1>
+
+            <p>Hungry? We got you.</p>
+        </div>
+    </section>
+
+    <section class="cart">
+        <h2>Your Cart</h2>
+        <ul id="cart-items"></ul>
+        <p id="cart-total"></p>
+        <button onclick="placeOrder()">Place Order</button>
+    </section>
+
+    <section class="restaurants">
+        {% for restaurant in restaurants %}
+            <div class="restaurant-card">
+                <h2>{{ restaurant.name }}</h2>
+                <p class="restaurant-info">{{ restaurant.address }}</p>
+                <p class="restaurant-info">{{ restaurant.email }} · {{ restaurant.phone }}</p>
+                <ul>
+
+                    {% for item in restaurant.menu %}
+                        <li>
+                            <span>{{ item.name }}</span>
+                            <span>${{ item.price }}</span>
+                            <button onclick="addToCart({{ item.id }}, '{{ item.name }}', {{ restaurant.id }})">Add</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </section>
+<script>
+        let cart = [];
+
+    function addToCart(itemId, itemName, restaurantId) {
+        cart.push({ item_id: itemId, name: itemName, restaurant_id: restaurantId });
+        renderCart();
+    }
+
+    function renderCart()
+     {
+        const cartList = document.getElementById('cart-items');
+        cartList.innerHTML = '';
+        cart.forEach(function(entry) {
+            const li = document.createElement('li');
+            li.textContent = entry.name;
+            cartList.appendChild(li);
+        });
+     }
+        async function placeOrder() {
+        const userId = localStorage.getItem('user_id');
+
+        if (!userId) {
+            alert('Please log in first!');
+            window.location.href = '/login-page';
+            return;
+        }
+
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+
+        const restaurantId = cart[0].restaurant_id;
+
+        const items = cart.map(function(entry) {
+            return { menu_item_id: entry.item_id, quantity: 1 };
+        });
+
+        const response = await fetch('/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: parseInt(userId),
+                restaurant_id: restaurantId,
+                items: items
+            })
+        });
+
+        const data = await response.json();
+        alert(data.message + ' Order ID: ' + data.order_id);
+        cart = [];
+        renderCart();
+     }
+    const hero = document.getElementById('hero');
+    const heroBg = document.getElementById('hero-bg');
+
+    hero.addEventListener('mousemove', function(event) {
+        const rect = hero.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        const moveX = (x / rect.width - 0.5) * 30;
+        const moveY = (y / rect.height - 0.5) * 30;
+
+        heroBg.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+</script>
+</body>
+</html>
