@@ -13,10 +13,11 @@ from fastapi.staticfiles import StaticFiles
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/")
+from fastapi.responses import RedirectResponse
 
+@app.get("/")
 def read_root():
-    return {"message":" Welcome to Quickbite my G!"}
+    return RedirectResponse(url="/restaurants-page")
 
 
 class Restaurant(Base):
