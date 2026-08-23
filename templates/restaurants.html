@@ -6,12 +6,13 @@
 </head>
 <body>
      <nav class="navbar">
-        <span class="navbar-logo">Quickbite</span>
-        <div class="navbar-links">
-            <a href="/restaurants-page">Restaurants</a>
-            <a href="#" id="account-link">Login</a>
-        </div>
-    </nav>
+    <span class="navbar-logo">Quickbite</span>
+    <div class="navbar-links">
+        <a href="/restaurants-page">Restaurants</a>
+        <a href="#" id="orders-link">My Orders</a>
+        <span id="username-display"></span>
+    </div>
+     </nav>
     <section class="hero" id="hero">
         <div class="hero-bg" id="hero-bg"></div>
         <div class="hero-content">
@@ -48,23 +49,23 @@
         {% endfor %}
     </section>
 <script>
-    const accountLink = document.getElementById('account-link');
-const username = localStorage.getItem('username');
+ const ordersLink = document.getElementById('orders-link');  
+ const usernameDisplay = document.getElementById('username-display');
+ const username = localStorage.getItem('username');
 
 if (username) {
-    accountLink.textContent = username;
-    accountLink.href = '/my-orders-page?user_id=' + localStorage.getItem('user_id');
+    usernameDisplay.textContent = username;
+    ordersLink.href = '/my-orders-page?user_id=' + localStorage.getItem('user_id');
 } else {
-    accountLink.textContent = 'Login';
-    accountLink.href = '/login-page';
+    usernameDisplay.textContent = '';
+    ordersLink.href = '/login-page';
 }
-        let cart = [];
+    let cart = [];
 
-    function addToCart(itemId, itemName, restaurantId) {
-        cart.push({ item_id: itemId, name: itemName, restaurant_id: restaurantId });
-        renderCart();
-    }
-
+function addToCart(itemId, itemName, restaurantId) {
+    cart.push({ item_id: itemId, name: itemName, restaurant_id: restaurantId });
+    renderCart();
+}
     function renderCart()
      {
         const cartList = document.getElementById('cart-items');
