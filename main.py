@@ -274,11 +274,11 @@ def restaurant_orders_page(request: Request, restaurant_id: int):
             menu_item = db.query(MenuItem).filter(MenuItem.id == oi.menu_item_id).first()
             item_details.append({"name": menu_item.name, "quantity": oi.quantity})
 
+        username_display = user.username if user else "Unknown user"
         order_data.append({
             "id": o.id,
-            "restaurant_name": user.username + "'s order",
+            "restaurant_name": username_display + "'s order",
             "items": item_details
         })
-
     db.close()
     return templates.TemplateResponse(request, "my_orders.html", {"orders": order_data})
