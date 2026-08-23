@@ -5,7 +5,13 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
+     <nav class="navbar">
+        <span class="navbar-logo">Quickbite</span>
+        <div class="navbar-links">
+            <a href="/restaurants-page">Restaurants</a>
+            <a href="#" id="account-link">Login</a>
+        </div>
+    </nav>
     <section class="hero" id="hero">
         <div class="hero-bg" id="hero-bg"></div>
         <div class="hero-content">
@@ -42,6 +48,16 @@
         {% endfor %}
     </section>
 <script>
+    const accountLink = document.getElementById('account-link');
+const username = localStorage.getItem('username');
+
+if (username) {
+    accountLink.textContent = username;
+    accountLink.href = '/my-orders-page?user_id=' + localStorage.getItem('user_id');
+} else {
+    accountLink.textContent = 'Login';
+    accountLink.href = '/login-page';
+}
         let cart = [];
 
     function addToCart(itemId, itemName, restaurantId) {
