@@ -259,3 +259,26 @@ def my_orders_page(request: Request, user_id: int):
 
     db.close()
     return templates.TemplateResponse(request, "my_orders.html", {"orders": order_data})
+@app.get("/restaurant-orders-page")
+def restaurant_orders_page(request: Request, restaurant_id: int):
+    db = SessionLocal()
+
+    orders = db.query(Order).filter(Order.restaurant_id == restaurant_id).all()
+    restaurant = db.query(Restaurant).filter(Restaurant.id == restaurant_id).first()
+
+    order_data = []
+    for o in orders:
+        user = db.query(User).filter(User.id == o.user_id).first()
+        item_details = []
+        for oi in o.items:
+            menu_item = db.query(MenuItem).filter(MenuItem.id == oi.menu_item_id).first()
+            item_details.append({"name": menu_item.name, "quantity": oi.quantity})
+
+        order_data.append({
+            "id": o.id,
+            "restaurant_name": user.username + "'s order",
+            "items": item_details
+        })
+
+    db.close()
+    return templates.TemplateResponse(request, "my_orders.html", {"orders": order_data})
