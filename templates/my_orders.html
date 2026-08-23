@@ -20,7 +20,7 @@
             <div class="restaurant-card">
                 <h2>Order #{{ order.id }} — {{ order.restaurant_name }}</h2>
                 <ul>
-                    {% for item in order.items %}
+                    {% for item in order['items'] %}
                         <li>
                             <span>{{ item.name }}</span>
                             <span>x{{ item.quantity }}</span>
