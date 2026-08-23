@@ -237,3 +237,25 @@ def login_page(request: Request):
 @app.get("/register-page")
 def register_page(request: Request):
     return templates.TemplateResponse(request, "register.html", {})
+@app.get("/my-orders-page")
+def my_orders_page(request: Request, user_id: int):
+    db = SessionLocal()
+
+    orders = db.query(Order).filter(Order.user_id == user_id).all()
+
+    order_data = []
+    for o in orders:
+        restaurant = db.query(Restaurant).filter(Restaurant.id == o.restaurant_id).first()
+        item_details = []
+        for oi in o.items:
+            menu_item = db.query(MenuItem).filter(MenuItem.id == oi.menu_item_id).first()
+            item_details.append({"name": menu_item.name, "quantity": oi.quantity})
+
+        order_data.append({
+            "id": o.id,
+            "restaurant_name": restaurant.name,
+            "items": item_details
+        })
+
+    db.close()
+    return templates.TemplateResponse(request, "my_orders.html", {"orders": order_data})
