@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quickbite - My Orders</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <span class="navbar-logo">Quickbite</span>
+        <div class="navbar-links">
+            <a href="/restaurants-page">Restaurants</a>
+        </div>
+    </nav>
+
+    <section class="restaurants">
+        <h1 style="font-family: 'Bricolage Grotesque', sans-serif; color: var(--accent); margin-bottom: 1.5rem;">My Orders</h1>
+
+        {% for order in orders %}
+            <div class="restaurant-card">
+                <h2>Order #{{ order.id }} — {{ order.restaurant_name }}</h2>
+                <ul>
+                    {% for item in order.items %}
+                        <li>
+                            <span>{{ item.name }}</span>
+                            <span>x{{ item.quantity }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </section>
+
+</body>
+</html>
